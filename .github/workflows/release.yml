@@ -1,53 +1,54 @@
-#name: Release
-#
-#on:
-#  push:
-#    branches:
-#      - main
-#
-#jobs:
-#  release:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout code
-#        uses: actions/checkout@v2
-#
-#      - name: Set up Node.js
-#        uses: actions/setup-node@v3
-#        with:
-#          node-version: '18'
-#
-#      - name: Install dependencies
-#        run: npm install
-#
-#      - name: Semantic Release
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-#        run: npx semantic-release
-name: Semantic-release
+name: Release
 
 on:
   push:
-    branches: ['main']
+    branches:
+      - main
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [16.x]
-
+    permissions:
+      contents: write
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
         uses: actions/setup-node@v3
+        with:
+          node-version: '18'
 
       - name: Install dependencies
-        run: yarn
+        run: npm install
 
-      - name: Semantic-release
+      - name: Semantic Release
         env:
           GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
-        run: yarn dlx semantic-release
+        run: npx semantic-release
+#name: Semantic-release
+#
+#on:
+#  push:
+#    branches: ['main']
+#
+#jobs:
+#  build:
+#    runs-on: ubuntu-latest
+#
+#    strategy:
+#      matrix:
+#        node-version: [16.x]
+#
+#    steps:
+#      - uses: actions/checkout@v3
+#      - name: Use Node.js ${{ matrix.node-version }}
+#        uses: actions/setup-node@v3
+#
+#      - name: Install dependencies
+#        run: yarn
+#
+#      - name: Semantic-release
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
+#        run: yarn dlx semantic-release
