@@ -1,45 +1,28 @@
-name: Node.js CI
+name: Release
 
 on:
   push:
-    branches: [ main ]
-  pull_request:
-    branches: [ main, develop ]
+    branches:
+      - main
 
 jobs:
-  quality:
-
-    runs-on: ${{ matrix.os }}
-
-    strategy:
-      matrix:
-        node-version: [16.x]
-        os: [ubuntu-latest]
-        # See supported Node.js release schedule at https://nodejs.org/en/about/releases/
-
-    steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v3
-        with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile
-      - run: yarn test
-
-  publish:
+  release:
     runs-on: ubuntu-latest
-    if: ${{ github.ref == 'refs/heads/master' }}
-    needs: [quality]
+
     steps:
-      - uses: actions/checkout@v3
-      - name: Use Node.js ${{ matrix.node-version }}
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: ${{ matrix.node-version }}
-          cache: 'yarn'
-      - run: yarn install --frozen-lockfile
-      - run: yarn semantic-release
+          node-version: '18'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Semantic Release
         env:
-          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.ACCESS_TOKEN }}
+        run: npx semantic-release --no-ci --debug
+
